@@ -14,19 +14,19 @@ where profit < 0
 order by 3 desc;
 
 -- 04 Average of profit by subcategory
-select Sub_Category, avg(profit) as profit_average
+select Sub_Category, round(avg(profit),3) as profit_average
 from orders
 group by Sub_Category
 order by 2 desc;
  
 -- 05 Average of profit by country
-select c.Country, avg(o.Profit) as profit_average
+select c.Country, round(avg(o.Profit),3) as profit_average
 from customers c join orders o on c.Row_ID = o.Row_ID
 group by c.Country
 order by 2 desc;
 
 -- 06 Searching for customers like M__mm__e
-select distinct Customer_Name, concat(region,',',country,',',state,',',city)
+select distinct Customer_Name, concat(region,',',country,',',state,',',city) as location
 from customers
 where Customer_Name regexp '^M.*mm.*e$';
 
@@ -35,7 +35,7 @@ select sum(sales)
 from orders;
 
 -- 08 Sales percentage by region
-select c.region, (sum(o.sales)/ 12616115)*100 as sales_perc
+select c.region, round((sum(o.sales)/ 12616115)*100,2) as sales_perc
 from customers c join orders o on c.Row_ID = o.Row_ID
 group by c.region
 order by 2 desc; 
