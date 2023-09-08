@@ -1,0 +1,49 @@
+prices_table = read.csv(file.choose(), header = T, sep = ",", nrows = -1)
+class(prices_table)
+View(prices_table)
+
+library(rpart)
+library(rattle)
+library(rpart.plot)
+tree_model <- rpart(Year~.,data = prices_table,method = "anova")
+summary(tree_model)
+plot(tree_model)
+text(tree_model)
+fancyRpartPlot(tree_model)
+
+summary(prices_table)
+
+cor(prices_table[,-2])
+cor(prices_table$Price_coffee_kilo, prices_table$Price_coffee_infl)
+
+x <- prices_table$Price_coffee_kilo
+y <- prices_table$Price_coffee_infl
+plot(x,y)
+model <- lm(y~x,data = prices_table)
+summary(model)
+abline(0.75804, 1.06249, col=2)
+anova(model)
+
+x_new <- c(7,7.5)
+y_pred <- predict(model, data.frame(x=x_new))
+y_pred
+
+pmatrix = scale(prices_table[,-2])
+d = dist(pmatrix)
+tr = hclust(d, method = "ward.D2") 
+plot(tr)
+rect.hclust(tr, k = 3)
+groups <- cutree(tr, k = 3)
+table(prices_table$Year,groups)
+
+totwinss = c()
+for(k in 2:10){
+	k_cl=kmeans(pmatrix,k)
+	totwinss[k] <- k_cl$tot.withinss
+plot(1:10, totwinss,xlab = "Number of clusters",ylab = "Total within sum of squares")
+lines(1:10, totwinss)
+k_cl = kmeans(pmatrix,3)
+table(prices_table$Year, k_cl$cluster)
+
+library(NbClust)
+res.nb <- NbClust(pmatrix, min.nc = 2, max.nc = 10, method = "complete")
